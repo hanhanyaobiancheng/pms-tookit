@@ -1,0 +1,15 @@
+{
+  "name": "pms-tookit",
+  "version": "0.0.1",
+  "description": "A tookit about react and js...",
+  "author": "wangshubin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hanhanyaobiancheng/pms-tookit.git"
+  },
+  "dependencies": {
+    "antd": "^2.12.5",
+    "docdash": "^0.4.0",
+    "jsdoc": "^3.4.3"
+  }
+}
