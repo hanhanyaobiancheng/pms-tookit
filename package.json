@@ -1,8 +1,8 @@
 {
   "name": "pms-tookit",
-  "version": "0.0.1",
+  "version": "0.0.29",
   "description": "A tookit about react and js...",
-  "author": "wangshubin",
+  "author": "linhan",
   "repository": {
     "type": "git",
     "url": "https://github.com/hanhanyaobiancheng/pms-tookit.git"

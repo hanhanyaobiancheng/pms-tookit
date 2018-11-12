@@ -9,7 +9,8 @@ import {
     QueryResult,
     PaginationComponent,
     ToolItem,
-} from 'zk-tookit/antd';
+    SortTitle,
+} from 'pms-tookit/antd';
 
 /**
  * 列表页的封装，通过传入相应的配置，生成列表页
@@ -75,7 +76,8 @@ export default class extends Component {
 
     search = (args) => {
         const {onSearch, showPagination} = this.props;
-        const {query} = this.state;
+        const {query, sortOrder, sortDataIndex} = this.state;
+        const sortParams = {orderType: sortOrder === 'ascend' ? 1 : 2, orderName: sortDataIndex};
         let params = {};
         if (showPagination) {
             const {pageNum} = this.props;
@@ -85,11 +87,13 @@ export default class extends Component {
                 pageNum,
                 pageSize,
                 ...args,
+                ...sortParams,
             };
         } else {
             params = {
                 ...query,
                 ...args,
+                ...sortParams,
             };
         }
         this.setState({loading: true});
@@ -97,13 +101,12 @@ export default class extends Component {
     };
 
     handleQuery = (query = {}) => {
-        const {pageNum} = this.props;
         const {showPagination} = this.props;
         let params = query;
         if (showPagination) {
             params = {
                 ...query,
-                pageNum,
+                pageNum: 1,
             };
         }
 
@@ -142,7 +145,7 @@ export default class extends Component {
             tableProps.rowSelection = rowSelection;
         }
 
-        const {loading, pageSize} = this.state;
+        const {loading, pageSize, sortOrder, sortDataIndex} = this.state;
         let {pageNum} = this.props;
         pageNum = pageNum <= 0 ? 1 : pageNum;
 
@@ -151,7 +154,21 @@ export default class extends Component {
             if (!item.key) {
                 item.key = item.dataIndex;
             }
-            return item;
+
+            let {title, isSort, dataIndex} = item;
+
+            const sortO = sortDataIndex === dataIndex ? sortOrder : false;
+
+            const sortTitle = (
+                <SortTitle
+                    sortOrder={sortO}
+                    onClick={(so) => {
+                        this.setState({sortOrder: so, sortDataIndex: dataIndex}, this.handleQuery);
+                    }}
+                >{title}</SortTitle>
+            );
+
+            return isSort ? {...item, title: sortTitle} : item;
         });
 
 

@@ -22,3 +22,4 @@ export PopPrompt from './pop-prompt/PopPrompt';
 export ToolItem from './tool-item/ToolItem';
 export Modal from './modal/Modal';
 export AnimationTable from './animation-table/AnimationTable';
+export SortTitle from './sort-column-title/SortTitle';

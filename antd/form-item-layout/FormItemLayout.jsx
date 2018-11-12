@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Form} from 'antd';
+import './style.less';
 
 /**
  * 基于antd FormItem进行布局，label固定宽度，表单元素自适应
@@ -11,8 +12,11 @@ const FormItem = Form.Item;
 export default class FormItemLayout extends Component {
     static defaultProps = {
         labelSpaceCount: 5,
-        labelFontSize: 12,
+        labelFontSize: 14,
         tipColor: 'rgba(0,0,0,.43)',
+        labelJustify: true,
+        labelHeight: 20,
+        labelMarginTop: 4,
     };
 
     static propTypes = {
@@ -32,6 +36,9 @@ export default class FormItemLayout extends Component {
         ]),
         tipWidth: PropTypes.number, // tip信息的宽度
         tipColor: PropTypes.string, // tip信息的颜色
+        labelJustify: PropTypes.bool, // 实现label两端对齐
+        labelHeight: PropTypes.number,
+        labelMarginTop: PropTypes.number,
     };
 
     state = {};
@@ -62,6 +69,12 @@ export default class FormItemLayout extends Component {
         return (labelSpaceCount + 2) * labelFontSize;
     }
 
+    getLabelWidthJustify = () => {
+        const {labelWidth, labelSpaceCount, labelFontSize} = this.props;
+        if (labelWidth !== undefined) return labelWidth;
+        return (labelSpaceCount + 1) * labelFontSize;
+    };
+
     render() {
         const {
             id,
@@ -73,6 +86,11 @@ export default class FormItemLayout extends Component {
             tip,
             tipWidth,
             tipColor,
+            labelJustify,
+            label = '',
+            labelFontSize,
+            labelHeight,
+            labelMarginTop,
         } = this.props;
 
         const wrapperProps = {};
@@ -95,6 +113,9 @@ export default class FormItemLayout extends Component {
             'labelWidth',
             'labelSpaceCount',
             'labelFontSize',
+            'label',
+            'labelHeight',
+            'labelMarginTop',
         ];
         ignoreProps.forEach(item => {
             Reflect.deleteProperty(formItemProps, item);
@@ -106,9 +127,33 @@ export default class FormItemLayout extends Component {
             if (!wrapperProps.style.width) wrapperProps.style.width = '100%';
         }
 
+        let justifyLabel = '';
+        if (labelJustify && label) {
+            const labelWidth = this.getLabelWidthJustify();
+            justifyLabel = (
+                <p
+                    className="label-in-form-item-justify"
+                    style={{
+                        fontSize: labelFontSize,
+                        width: `${labelWidth - 14}px`,
+                        height: labelHeight,
+                        lineHeight: `${labelHeight}px`,
+                        marginTop: labelMarginTop,
+                    }}
+                >
+                    <span style={{fontSize: labelFontSize}}>{label}</span>
+                    <span className="label-in-form-item-empty-justSpan"/>
+                </p>
+            );
+        }
+
         return (
-            <div {...wrapperProps} ref={node => this.formItemDom = node}>
-                <FormItem {...formItemProps}>
+            <div {...wrapperProps} ref={node => this.formItemDom = node} className="form-item-layout-justify-label">
+                <FormItem
+                    label={justifyLabel || label}
+                    {...formItemProps}
+                    // colon={false}
+                >
                     {children}
                 </FormItem>
                 {
